@@ -13,6 +13,11 @@ BOOK_FORMATS = (
     ('A', 'Audiobook'),
 )
 
+PLCIE = models.IntegerChoices(
+    "Plcie",
+    "Kobieta Mezczyzna Inna"
+)
+
 class Genre(models.Model):
     """Model reprezentujący gatunek literacki."""
     name = models.CharField(max_length=50)
@@ -53,3 +58,23 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
+    
+
+class Osoba(models.Model):
+
+    imie = models.CharField(max_length=50, blank=False, null=False)
+    nazwisko = models.CharField(max_length=50, blank=False, null=False)
+    plec = models.IntegerField(choices=PLCIE.choices, default= PLCIE.choices[2][0])
+    stanowisko = models.ForeignKey('Stanowisko', on_delete=models.CASCADE)
+    data_dodania = models.DateField(auto_now_add=True, editable=False)
+
+    def __str__(self):
+        return f"Osoba:{self.imie} {self.nazwisko}"
+    
+    class Meta:
+        ordering = ["nazwisko"]
+
+
+class Stanowisko(models.Model):
+    nazwa = models.CharField(max_length=70, blank=False, null=False)
+    opis = models.TextField(null=True, blank=True)
